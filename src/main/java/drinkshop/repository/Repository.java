@@ -1,10 +1,11 @@
 package drinkshop.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Repository<ID, E> {
 
-    E findOne(ID id);
+    Optional<E> findOne(ID id);
 
     List<E> findAll();
 

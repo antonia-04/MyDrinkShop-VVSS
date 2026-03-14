@@ -36,13 +36,15 @@ public class OrderService {
         return orderRepo.findAll();
     }
 
-    public Order findById(int id) {
+    public java.util.Optional<Order> findById(int id) {
         return orderRepo.findOne(id);
     }
 
     public double computeTotal(Order o) {
         return o.getItems().stream()
-                .mapToDouble(i -> productRepo.findOne(i.getProduct().getId()).getPret() * i.getQuantity())
+                .mapToDouble(i -> productRepo.findOne(i.getProduct().getId())
+                        .map(p -> p.getPret() * i.getQuantity())
+                        .orElse(0.0))
                 .sum();
     }
 

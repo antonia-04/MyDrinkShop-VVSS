@@ -6,7 +6,6 @@ import drinkshop.domain.Stoc;
 import drinkshop.repository.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 public class StocService {
 
@@ -34,12 +33,13 @@ public class StocService {
 
     public boolean areSuficient(Reteta reteta) {
         List<IngredientReteta> ingredienteNecesare = reteta.getIngrediente();
+        List<Stoc> toateStocurile = stocRepo.findAll();
 
         for (IngredientReteta e : ingredienteNecesare) {
             String ingredient = e.getDenumire();
             double necesar = e.getCantitate();
 
-            double disponibil = stocRepo.findAll().stream()
+            double disponibil = toateStocurile.stream()
                     .filter(s -> s.getIngredient().equalsIgnoreCase(ingredient))
                     .mapToDouble(Stoc::getCantitate)
                     .sum();
@@ -56,24 +56,23 @@ public class StocService {
             throw new IllegalStateException("Stoc insuficient pentru rețeta.");
         }
 
+        List<Stoc> toateStocurile = stocRepo.findAll();
+
         for (IngredientReteta e : reteta.getIngrediente()) {
             String ingredient = e.getDenumire();
             double necesar = e.getCantitate();
-
-            List<Stoc> ingredienteStoc = stocRepo.findAll().stream()
-                    .filter(s -> s.getIngredient().equalsIgnoreCase(ingredient))
-                    .toList();
-
             double ramas = necesar;
 
-            for (Stoc s : ingredienteStoc) {
+            for (Stoc s : toateStocurile) {
                 if (ramas <= 0) break;
 
-                double deScazut = Math.min(s.getCantitate(), ramas);
-                s.setCantitate((int)(s.getCantitate() - deScazut));
-                ramas -= deScazut;
+                if (s.getIngredient().equalsIgnoreCase(ingredient)) {
+                    double deScazut = Math.min(s.getCantitate(), ramas);
+                    s.setCantitate(s.getCantitate() - deScazut);
+                    ramas -= deScazut;
 
-                stocRepo.update(s);
+                    stocRepo.update(s);
+                }
             }
         }
     }

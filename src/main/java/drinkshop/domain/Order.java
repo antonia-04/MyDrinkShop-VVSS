@@ -64,6 +64,9 @@ public class Order implements Serializable {
     }
 
     public void computeTotalPrice() {
-        this.totalPrice=items.stream().mapToDouble(OrderItem::getTotal).sum();
-    }
-}
+        if (this.items == null) {
+            this.totalPrice = 0.0;
+        } else {
+            this.totalPrice = items.stream().mapToDouble(OrderItem::getTotal).sum();
+        }
+    }}

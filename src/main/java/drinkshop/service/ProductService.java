@@ -38,10 +38,9 @@ public class ProductService {
         return productRepo.findAll();
     }
 
-    public Product findById(int id) {
+    public java.util.Optional<Product> findById(int id) {
         return productRepo.findOne(id);
     }
-
     public List<Product> filterByCategorie(CategorieBautura categorie) {
         if (categorie == CategorieBautura.ALL) return getAllProducts();
         return getAllProducts().stream()

@@ -26,7 +26,8 @@ public class RetetaService {
     }
 
     public Reteta findById(int id) {
-        return retetaRepo.findOne(id);
+        return retetaRepo.findOne(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reteta nu a fost gasita cu ID-ul: " + id));
     }
 
     public List<Reteta> getAll() {

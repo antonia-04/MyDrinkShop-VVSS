@@ -4,40 +4,40 @@ import drinkshop.repository.AbstractRepository;
 
 import java.io.*;
 
-public abstract class FileAbstractRepository<ID, E>
-        extends AbstractRepository<ID, E> {
+public abstract class FileAbstractRepository<ID, E> extends AbstractRepository<ID, E> {
 
     protected String fileName;
 
     public FileAbstractRepository(String fileName) {
+        if (fileName == null || fileName.trim().isEmpty()) {
+            throw new IllegalArgumentException("File name must not be null or empty");
+        }
         this.fileName = fileName;
-        //loadFromFile();
+        // loadFromFile();
     }
 
     protected void loadFromFile() {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
-
             String line;
             while ((line = br.readLine()) != null) {
                 E entity = extractEntity(line);
-                super.save(entity);
+                if (entity != null) {
+                    super.save(entity);
+                }
             }
-
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error reading from file: " + fileName, e);
         }
     }
 
     private void writeToFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
-
             for (E entity : entities.values()) {
                 bw.write(createEntityAsString(entity));
                 bw.newLine();
             }
-
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error writing to file: " + fileName, e);
         }
     }
 

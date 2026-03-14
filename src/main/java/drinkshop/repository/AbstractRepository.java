@@ -3,6 +3,7 @@ package drinkshop.repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.StreamSupport;
 
 public abstract class AbstractRepository<ID, E>
@@ -11,8 +12,11 @@ public abstract class AbstractRepository<ID, E>
     protected Map<ID, E> entities = new HashMap<>();
 
     @Override
-    public E findOne(ID id) {
-        return entities.get(id);
+    public Optional<E> findOne(ID id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID must not be null");
+        }
+        return Optional.ofNullable(entities.get(id));
     }
 
     @Override
