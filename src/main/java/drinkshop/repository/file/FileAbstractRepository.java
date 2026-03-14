@@ -13,7 +13,7 @@ public abstract class FileAbstractRepository<ID, E> extends AbstractRepository<I
             throw new IllegalArgumentException("File name must not be null or empty");
         }
         this.fileName = fileName;
-        // loadFromFile();
+        loadFromFile();
     }
 
     protected void loadFromFile() {
