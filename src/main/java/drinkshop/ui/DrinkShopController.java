@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -243,7 +244,7 @@ public class DrinkShopController {
 
     // ---------- EXPORT + REVENUE ----------
     @FXML
-    private void onExportOrdersCsv() {
+    private void onExportOrdersCsv() throws IOException {
         service.exportCsv("orders.csv");
     }
 
