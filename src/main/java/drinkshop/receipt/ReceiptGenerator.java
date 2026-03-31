@@ -7,6 +7,9 @@ import drinkshop.domain.Product;
 import java.util.List;
 
 public class ReceiptGenerator {
+
+    private ReceiptGenerator() {}
+
     public static String generate(Order o, List<Product> products) {
         if (o == null || products == null || o.getItems() == null) {
             throw new IllegalArgumentException("Invalid input for receipt generation");
