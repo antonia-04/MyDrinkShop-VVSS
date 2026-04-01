@@ -15,6 +15,12 @@ public class ProductService {
     }
 
     public void addProduct(Product p) {
+        if(p.getId()<=0){
+            throw new IllegalArgumentException("Invalid id");
+        }
+        if (p.getNume() == null || p.getNume().trim().isEmpty()) {
+            throw new IllegalArgumentException("Empty name");
+        }
         productRepo.save(p);
     }
 

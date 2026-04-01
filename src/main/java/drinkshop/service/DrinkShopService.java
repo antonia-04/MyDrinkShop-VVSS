@@ -6,6 +6,7 @@ import drinkshop.receipt.ReceiptGenerator;
 import drinkshop.reports.DailyReportService;
 import drinkshop.repository.Repository;
 
+import java.io.IOException;
 import java.util.List;
 
 public class DrinkShopService {
@@ -75,7 +76,7 @@ public class DrinkShopService {
         return report.getTotalRevenue();
     }
 
-    public void exportCsv(String path) {
+    public void exportCsv(String path) throws IOException {
         CsvExporter.exportOrders(productService.getAllProducts(), orderService.getAllOrders(), path);
     }
 

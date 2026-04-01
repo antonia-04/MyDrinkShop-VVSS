@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CsvExporter {
-    public static void exportOrders(List<Product> products, List<Order> orders, String path) {
+    public static void exportOrders(List<Product> products, List<Order> orders, String path) throws IOException {
         try (FileWriter w = new FileWriter(path)) {
             w.write("OrderId,Product,Quantity,Price\n");
             double sum = 0.0;
@@ -37,7 +37,7 @@ public class CsvExporter {
             w.write("TOTAL OF " + date + " is: " + sum + " RON\n");
 
         } catch (IOException e) {
-            throw new RuntimeException("Error exporting orders to CSV file at path: " + path, e);
+            throw new IOException("Error exporting orders to CSV file at path: " + path, e);
         }
     }
 }

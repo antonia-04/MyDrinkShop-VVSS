@@ -64,7 +64,7 @@ public class FileOrderRepository extends FileAbstractRepository<Integer, Order> 
 
         if (entity.getItems() != null) {
             for (OrderItem item : entity.getItems()) {
-                if (sb.length() > 0) {
+                if (!sb.isEmpty()) {
                     sb.append("|");
                 }
                 sb.append(item.getProduct().getId())

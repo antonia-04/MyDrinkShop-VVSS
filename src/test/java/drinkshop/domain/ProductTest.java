@@ -27,7 +27,7 @@ class ProductTest {
 
     @Test
     void getNume() {
-        assert "Limonada".equals(product.getNume());
+        assertEquals("Limonada", product.getNume(), "The product name should match the expected value.");
     }
 
     @Test
