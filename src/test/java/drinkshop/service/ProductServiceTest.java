@@ -87,4 +87,50 @@ class ProductServiceTest {
 
         assertTrue(exception.getMessage().contains(expectedError));
     }
+
+    // ==========================================
+    // TESTE BVA (Boundary Value Analysis)
+    // ==========================================
+
+    @ParameterizedTest(name = "BVA Valid -> id={0}, nume='{1}', pret={2}")
+    @Tag("Positive")
+    @CsvSource({
+            "1,  'suc',                   3.14, JUICE,          WATER_BASED", // Limita minimă ID (1)
+            "2,  'ceai',                  4.5,  TEA,            WATER_BASED", // Lângă limita minimă ID (2)
+            "13, 'a',                     5.45, SPECIAL_COFFEE, PLANT_BASED", // Limita minimă lungime nume (1)
+            "16, '1234567890123456789',   9.95, TEA,            BASIC",       // Limita maximă lungime nume (19)
+            "82, 'cafea',                 0.01, SPECIAL_COFFEE, DAIRY"        // Limita minimă preț (> 0)
+    })
+    @DisplayName("TC5-TC9_BVA: Adăugare produse la limitele VALIDE")
+    void testAddProduct_BVA_Valid(int id, String nume, double pret, CategorieBautura cat, TipBautura tip) {
+        // Arrange
+        Product validBoundaryProduct = new Product(id, nume, pret, cat, tip);
+
+        // Act & Assert
+        assertDoesNotThrow(() -> productService.addProduct(validBoundaryProduct),
+                "Produsul cu valori la limită ar trebui adăugat cu succes.");
+    }
+
+    @ParameterizedTest(name = "BVA Invalid -> id={0}, nume='{1}', pret={2}")
+    @Tag("Negative")
+    @CsvSource({
+            "0,  'latte',                12.0, TEA,         DAIRY,  'Invalid id'",    // Sub limita ID (0)
+            "17, '12345678901234567890', 10.0, MILK_COFFEE, POWDER, 'Invalid name'",  // Peste limita nume (20 caractere)
+            "81, 'ceai',                 0.0,  SMOOTHIE,    DAIRY,  'Invalid price'"  // Sub limita preț (0.0)
+    })
+    @DisplayName("TC10-TC12_BVA: Respingere produse la limitele INVALIDE")
+    void testAddProduct_BVA_Invalid(int id, String nume, double pret, CategorieBautura cat, TipBautura tip, String expectedError) {
+        // Arrange
+        Product invalidBoundaryProduct = new Product(id, nume, pret, cat, tip);
+
+        // Act & Assert
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            productService.addProduct(invalidBoundaryProduct);
+        }, "Ar fi trebuit să pice validarea BVA la limită.");
+
+        // Verificăm dacă mesajul de eroare aruncat corespunde cu ce așteptăm
+        // (Atenție: Asigură-te că validatorul tău aruncă exact aceste mesaje)
+        assertTrue(exception.getMessage().contains(expectedError),
+                "Mesajul de eroare nu corespunde. Așteptat să conțină: " + expectedError);
+    }
 }

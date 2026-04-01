@@ -2,6 +2,7 @@ package drinkshop.service;
 
 import drinkshop.domain.*;
 import drinkshop.repository.Repository;
+import drinkshop.service.validator.ProductValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,18 +10,15 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final Repository<Integer, Product> productRepo;
+    private ProductValidator productValidator;
 
     public ProductService(Repository<Integer, Product> productRepo) {
         this.productRepo = productRepo;
+        this.productValidator = new ProductValidator();
     }
 
     public void addProduct(Product p) {
-        if(p.getId()<=0){
-            throw new IllegalArgumentException("Invalid id");
-        }
-        if (p.getNume() == null || p.getNume().trim().isEmpty()) {
-            throw new IllegalArgumentException("Empty name");
-        }
+        productValidator.validate(p);
         productRepo.save(p);
     }
 

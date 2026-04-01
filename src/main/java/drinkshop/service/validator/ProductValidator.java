@@ -7,18 +7,22 @@ public class ProductValidator implements Validator<Product> {
     @Override
     public void validate(Product product) {
 
-        String errors = "";
+        // Verificăm ID-ul
+        if (product.getId() <= 0) {
+            throw new IllegalArgumentException("Invalid id");
+        }
 
-        if (product.getId() <= 0)
-            errors += "ID invalid!\n";
+        // Verificăm Numele (gol sau peste 19 caractere pt BVA)
+        if (product.getNume() == null || product.getNume().trim().isEmpty()) {
+            throw new IllegalArgumentException("Empty name");
+        }
+        if (product.getNume().length() > 19) {
+            throw new IllegalArgumentException("Invalid name");
+        }
 
-        if (product.getNume() == null || product.getNume().isBlank())
-            errors += "Numele nu poate fi gol!\n";
-
-        if (product.getPret() <= 0)
-            errors += "Pret invalid!\n";
-
-        if (!errors.isEmpty())
-            throw new ValidationException(errors);
+        // Verificăm Prețul
+        if (product.getPret() <= 0) {
+            throw new IllegalArgumentException("Invalid price");
+        }
     }
 }
