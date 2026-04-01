@@ -12,12 +12,9 @@ public class ProductValidator implements Validator<Product> {
             throw new IllegalArgumentException("Invalid id");
         }
 
-        // Verificăm Numele (gol sau peste 19 caractere pt BVA)
+        // Verificăm Numele (gol)
         if (product.getNume() == null || product.getNume().trim().isEmpty()) {
             throw new IllegalArgumentException("Empty name");
-        }
-        if (product.getNume().length() > 19) {
-            throw new IllegalArgumentException("Invalid name");
         }
 
         // Verificăm Prețul
