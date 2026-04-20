@@ -18,11 +18,12 @@ import org.junit.jupiter.api.io.TempDir;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.*;
 
-@DisplayName("Teste ECP pentru ProductService (File Repository)")
+@DisplayName("Teste pentru ProductService (File Repository)")
 class ProductServiceTest {
 
     private ProductService productService;
@@ -128,5 +129,101 @@ class ProductServiceTest {
         // Verificăm dacă mesajul de eroare aruncat corespunde cu ce așteptăm
         assertTrue(exception.getMessage().contains(expectedError),
                 "Mesajul de eroare nu corespunde. Așteptat să conțină: " + expectedError);
+    }
+
+    @Test
+    @Tag("WhiteBox")
+    @DisplayName("WB-TC1: Acoperire ramura 'categorie == null'")
+    void testFilterByCategorie_NullBranch() {
+        // Arrange
+        Product p1 = new Product(10, "Smoothie de capsuni", 15, CategorieBautura.SMOOTHIE, TipBautura.PLANT_BASED);
+        Product p2 = new Product(11, "Ceai de ghimbir", 2.0, CategorieBautura.TEA, TipBautura.WATER_BASED);
+        productService.addProduct(p1);
+        productService.addProduct(p2);
+
+        // Act
+        List<Product> result = productService.filterByCategorie(null);
+
+        // Assert
+        assertTrue(result.isEmpty(), "Ramura null ar trebui sa returneze o lista goala.");
+    }
+
+    @Test
+    @Tag("WhiteBox")
+    @DisplayName("WB-TC2: Acoperire ramura 'ALL' (Path Coverage)")
+    void testFilterByCategorie_AllBranch() {
+        // Arrange: Adaugam cateva produse în fișier
+        productService.addProduct(new Product(1, "Suc de portocale", 10.0, CategorieBautura.JUICE, TipBautura.PLANT_BASED));
+        productService.addProduct(new Product(2, "Ceai de menta", 15.0, CategorieBautura.TEA, TipBautura.WATER_BASED));
+
+        // Act
+        List<Product> result = productService.filterByCategorie(CategorieBautura.ALL);
+
+        // Assert
+        assertEquals(2, result.size(), "Ramura ALL ar trebui sa returneze toate produsele.");
+    }
+
+    @Test
+    @Tag("WhiteBox")
+    @DisplayName("WB-TC3: Lista este fara produse, filtrare dupa o categorie specifica (JUICE)")
+    void testFilterByCategorie_FilteringBranch() {
+        // Act: Filtrare dupa JUICE
+        List<Product> result = productService.filterByCategorie(CategorieBautura.JUICE);
+
+        // Assert
+        assertEquals(0, result.size());
+    }
+    @Test
+    @Tag("WhiteBox")
+    @DisplayName("WB-TC4: Lista cu produse, niciunul nu se potriveste")
+    void testFilterByCategorie_NoMatches() {
+        // 1. Arrange: Adaugam produse dintr-o categorie diferita
+        productService.addProduct(new Product(10, "Smoothie de capsuni", 2.5,
+                CategorieBautura.SMOOTHIE, TipBautura.PLANT_BASED));
+        productService.addProduct(new Product(11, "Ceai de ghimbir", 2.0,
+                CategorieBautura.TEA, TipBautura.WATER_BASED));
+
+        // 2. Act: Cautam ceva ce nu exista
+        List<Product> result = productService.filterByCategorie(CategorieBautura.JUICE);
+
+        // 3. Assert
+        assertTrue(result.isEmpty(), "Lista ar trebui sa fie goala, nu exista nicio potrivire.");
+    }
+
+    @Test
+    @Tag("WhiteBox")
+    @DisplayName("WB-TC5: Toate produsele din lista se potrivesc")
+    void testFilterByCategorie_AllMatch() {
+        // 1. Arrange: Adaugam doar cafele
+        productService.addProduct(new Product(20, "Suc de mere", 15.0, CategorieBautura.JUICE, TipBautura.PLANT_BASED));
+        productService.addProduct(new Product(21, "Suc de portocale", 12.0, CategorieBautura.JUICE, TipBautura.PLANT_BASED));
+        productService.addProduct(new Product(22, "Suc de visine", 10.0, CategorieBautura.JUICE, TipBautura.PLANT_BASED));
+        productService.addProduct(new Product(23, "Suc de pere", 15.0, CategorieBautura.JUICE, TipBautura.PLANT_BASED));
+        productService.addProduct(new Product(24, "Suc de struguri", 12.0, CategorieBautura.JUICE, TipBautura.PLANT_BASED));
+        // 2. Act
+        List<Product> result = productService.filterByCategorie(CategorieBautura.JUICE);
+
+        // 3. Assert
+        assertEquals(5, result.size(), "Ar fi trebuit sa gaseasca toate cele 5 produse.");
+    }
+
+    @Test
+    @Tag("WhiteBox")
+    @DisplayName("WB-TC6: Mix de produse (Match & No-Match)")
+    void testFilterByCategorie_MixedResults() {
+        // 1. Arrange: Un mix de categorii
+        Product p1 = new Product(30, "Latte", 15.0, CategorieBautura.MILK_COFFEE, TipBautura.DAIRY);
+        Product p2 = new Product(31, "Cola", 7.0, CategorieBautura.JUICE, TipBautura.BASIC);
+
+        productService.addProduct(p1);
+        productService.addProduct(p2);
+
+        // 2. Act: Filtram dupa MILK_COFFEE, doar Latte ar trebui sa se potriveasca
+        List<Product> result = productService.filterByCategorie(CategorieBautura.JUICE);
+
+        // 3. Assert
+        assertEquals(1, result.size(), "Ar fi trebuit sa gaseasca doar un produs.");
+        assertNotEquals("Latte", result.get(0).getNume());
+        assertEquals("Cola", result.get(0).getNume());
     }
 }
