@@ -2,6 +2,9 @@ link :
 
 https://ubbcluj-my.sharepoint.com/:x:/r/personal/maria_madalina_mera_stud_ubbcluj_ro/_layouts/15/Doc.aspx?sourcedoc=%7BEFD0747D-BF49-489C-ABF4-23AF0FC8ABCE%7D&file=Lab01_ReviewReport.xlsx&fromShare=true&action=default&mobileredirect=true
 
+link Laborator 3:
+https://docs.google.com/spreadsheets/d/1B6zAnE5o0YY8CXANt4L7vpvptHu0J2RQA4oSPCX1py8/edit?usp=sharing
+
 Cerinta:
 
 MyDrinkShop
