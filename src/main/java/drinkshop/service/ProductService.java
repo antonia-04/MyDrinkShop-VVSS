@@ -46,27 +46,61 @@ public class ProductService {
     public java.util.Optional<Product> findById(int id) {
         return productRepo.findOne(id);
     }
+//    public List<Product> filterByCategorie(CategorieBautura categorie) {
+////        if (categorie == CategorieBautura.ALL) return getAllProducts();
+////        return getAllProducts().stream()
+////                .filter(p -> p.getCategorie() == categorie)
+////                .collect(Collectors.toList());
+//        List<Product> matchingProducts = new ArrayList<>();
+//        if (categorie == null) {
+//        }
+//        else if (categorie == CategorieBautura.ALL) {
+//            matchingProducts = getAllProducts();
+//        } else { var allProducts = getAllProducts();
+//            var product = new Product(0, null, 0.0, null, null);
+//            while (!allProducts.isEmpty()){
+//                product = allProducts.removeFirst();
+//                if (product.getCategorie() == categorie)
+//                    matchingProducts.add(product);}
+//        }
+//        return matchingProducts;
+//
+//    }
     public List<Product> filterByCategorie(CategorieBautura categorie) {
-//        if (categorie == CategorieBautura.ALL) return getAllProducts();
-//        return getAllProducts().stream()
-//                .filter(p -> p.getCategorie() == categorie)
-//                .collect(Collectors.toList());
         List<Product> matchingProducts = new ArrayList<>();
+
+        // NODUL 2
         if (categorie == null) {
+            // NODUL 3 (Sare la 13)
         }
+        // NODUL 4
         else if (categorie == CategorieBautura.ALL) {
+            // NODUL 5
             matchingProducts = getAllProducts();
-        } else { var allProducts = getAllProducts();
-            var product = new Product(0, null, 0.0, null, null);
-            while (!allProducts.isEmpty()){
-                product = allProducts.removeFirst();
-                if (product.getCategorie() == categorie)
-                    matchingProducts.add(product);}
         }
+        // NODUL 6
+        else {
+            // facem o copie a listei! nu schimbă cu nimic graful
+            var allProducts = new ArrayList<>(getAllProducts());
+
+            // NODUL 7
+            var product = new Product(0, null, 0.0, null, null);
+
+            // NODUL 8
+            while (!allProducts.isEmpty()) {
+                // NODUL 9: Folosim remove(0) în loc de removeFirst()
+                product = allProducts.remove(0);
+
+                // NODUL 10
+                if (product.getCategorie() == categorie) {
+                    // NODUL 11
+                    matchingProducts.add(product);
+                }
+            }
+        }
+        // NODUL 13
         return matchingProducts;
-
     }
-
 
 
     public List<Product> filterByTip(TipBautura tip) {
